@@ -1,0 +1,15 @@
+artifact_uri: file:///E:/Task7/mlruns/864228429866329557/81f5b1268fa84451ab00f276b85338da/artifacts
+end_time: 1739110288690
+entry_point_name: ''
+experiment_id: '864228429866329557'
+lifecycle_stage: active
+run_id: 81f5b1268fa84451ab00f276b85338da
+run_name: LSTM Text Classification
+run_uuid: 81f5b1268fa84451ab00f276b85338da
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739109916344
+status: 3
+tags: []
+user_id: DELL inspiron

@@ -1,0 +1,6 @@
+artifact_location: file:///E:/Task7/mlruns/864228429866329557
+creation_time: 1739105878258
+experiment_id: '864228429866329557'
+last_update_time: 1739105878258
+lifecycle_stage: active
+name: LSTM_Text_Classification

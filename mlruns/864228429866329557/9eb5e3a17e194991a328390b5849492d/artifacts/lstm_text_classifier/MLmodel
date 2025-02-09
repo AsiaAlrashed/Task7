@@ -1,0 +1,20 @@
+artifact_path: lstm_text_classifier
+flavors:
+  python_function:
+    data: data
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.tensorflow
+    python_version: 3.10.11
+  tensorflow:
+    code: null
+    data: data
+    keras_version: 2.18.0
+    model_type: keras
+    save_format: tf
+mlflow_version: 2.20.1
+model_size_bytes: 4437198
+model_uuid: ce157f420c1f4874af3883f481ccdbe7
+run_id: 9eb5e3a17e194991a328390b5849492d
+utc_time_created: '2025-02-09 16:26:28.608261'

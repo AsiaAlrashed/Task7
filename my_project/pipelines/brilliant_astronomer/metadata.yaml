@@ -1,0 +1,91 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - transform
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: extract_data
+  retry_config: null
+  status: updated
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: extract_data
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - lstm_model
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transform
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - extract_data
+  uuid: transform
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - fast_api
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: lstm_model
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - transform
+  uuid: lstm_model
+- all_upstream_blocks_executed: false
+  color: pink
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: fast_api
+  retry_config: null
+  status: updated
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - lstm_model
+  uuid: fast_api
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2025-02-06 13:04:20.143556+00:00'
+data_integration: null
+description: ML
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: brilliant astronomer
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+uuid: brilliant_astronomer
+variables_dir: C:\Users\DELL inspiron/.mage_data\my_project
+widgets: []
