@@ -10,16 +10,15 @@ import uvicorn
 if "custom" not in globals():
     from mage_ai.data_preparation.decorators import custom
 
-# تحميل النموذج المدرب
-model_path = "E:\\Task7\\lstm_text_classifier.h5"  # المسار الذي حفظت فيه النموذج
+# upload the trained model from the path I saved it in
+model_path = "E:\\Task7\\lstm_text_classifier.h5"  
 model = load_model(model_path)
 
 app = FastAPI()
-# تعريف البيانات المدخلة للنموذج
+
 class TextInput(BaseModel):
     text: str
 
-# محول النصوص
 class TextProcessor:
     def __init__(self, vocab_size=5000, max_length=20, oov_token="<OOV>"):
         self.vocab_size = vocab_size
@@ -39,7 +38,6 @@ class TextProcessor:
         return pad_sequences(sequences, maxlen=self.max_length, padding="post")
 
 
-# تحضير المحول النصي
 processor = TextProcessor()
 
 @app.get("/")
@@ -48,18 +46,18 @@ def read_root():
 
 @app.post("/predict/")
 def predict(text_input: TextInput):
-    # تحويل النص المدخل إلى تسلسل
+    # Convert input text to sequence
     text = [text_input.text]
     processed_text = processor.transform_texts(text)
 
-    # إجراء التنبؤ باستخدام النموذج المدرب
+    # Predicting using the model
     prediction = model.predict(np.array(processed_text))
 
-    # إرجاع التنبؤ
+    # Return prediction
     return {"prediction": float(prediction[0][0])}
 
 
-# تشغيل FastAPI كخطوة أخيرة في خط أنابيب Mage
+#Running FastAPI as the last step in the Mage pipeline
 @custom
 def run_api(*args, **kwargs):
     uvicorn.run(app, host="0.0.0.0", port=8000)
