@@ -6,39 +6,51 @@ from tensorflow.keras.callbacks import Callback
 
 class MLFlow:
     def __init__(self, experiment_name: str):
-        """تهيئة MLflow مع تخزين محلي."""
+        """
+        Configure MLflow with local storage
+        """
         self.experiment_name = experiment_name
         mlflow.set_tracking_uri(
             "file:///E:/Task7/mlruns"
-        )  # تأكد من ضبط المسار بشكل صحيح
+        )  
         mlflow.set_experiment(experiment_name)
 
     def start_run(self, run_name: str):
-        """بدء جلسة جديدة مع إنهاء الجلسة السابقة إن وجدت."""
+        """
+        Start a new session and end the previous session if any.
+        """
         if mlflow.active_run():
             mlflow.end_run()
         self.run = mlflow.start_run(run_name=run_name)
-        print(f"✅ بدأ تشغيل MLflow مع اسم الجلسة: {run_name}")
+        print(f"Start MLflow with session name: {run_name}")
 
     def log_params(self, params: dict):
-        """تسجيل معلمات التدريب."""
+        """
+        Register training parameters
+        """
         mlflow.log_params(params)
-        print(f"✅ تسجيل المعلمات: {params}")
+        print(f"Register parameters: {params}")
 
     def log_metrics(self, metrics: dict):
-        """تسجيل المقاييس أثناء التدريب."""
+        """
+        Record metrics during training.
+        """
         mlflow.log_metrics(metrics)
-        print(f"✅ تسجيل المقاييس: {metrics}")
+        print(f"Recording metrics: {metrics}")
 
     def log_model(self, model, model_path: str):
-        """حفظ النموذج في MLflow."""
+        """
+        Save the model in MLflow.
+        """
         mlflow.tensorflow.log_model(model, artifact_path=model_path)
-        print(f"✅ تم تسجيل النموذج في MLflow: {model_path}")
+        print(f"The model is registered in MLflow: {model_path}")
 
     def end_run(self):
-        """إنهاء التجربة."""
+        """
+        End the experiment.
+        """
         mlflow.end_run()
-        print("🏁 تجربة MLflow انتهت.")
+        print("MLflow experiment is over")
 
 
 class MLflowCallback(Callback):
