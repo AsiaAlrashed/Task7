@@ -10,19 +10,14 @@ import uvicorn
 if "custom" not in globals():
     from mage_ai.data_preparation.decorators import custom
 
-    print(__name__)
 # تحميل النموذج المدرب
 model_path = "E:\\Task7\\lstm_text_classifier.h5"  # المسار الذي حفظت فيه النموذج
 model = load_model(model_path)
 
-# إعداد FastAPI
 app = FastAPI()
-
-
 # تعريف البيانات المدخلة للنموذج
 class TextInput(BaseModel):
     text: str
-
 
 # محول النصوص
 class TextProcessor:
@@ -30,7 +25,7 @@ class TextProcessor:
         self.vocab_size = vocab_size
         self.max_length = max_length
         self.oov_token = oov_token
-        self.tokenizer = tf.preprocessing.text.Tokenizer(
+        self.tokenizer = tf.keras.preprocessing.text.Tokenizer(
             num_words=self.vocab_size, oov_token=self.oov_token
         )
 
@@ -47,6 +42,9 @@ class TextProcessor:
 # تحضير المحول النصي
 processor = TextProcessor()
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the API"}
 
 @app.post("/predict/")
 def predict(text_input: TextInput):
@@ -61,13 +59,7 @@ def predict(text_input: TextInput):
     return {"prediction": float(prediction[0][0])}
 
 
-# تشغيل FastAPI داخل عملية منفصلة
+# تشغيل FastAPI كخطوة أخيرة في خط أنابيب Mage
 @custom
 def run_api(*args, **kwargs):
-    def start_api():
-        uvicorn.run(app, host="0.0.0.0", port=8000)
-
-    if __name__ == "__fast_api__":
-        process = Process(target=start_api)
-        process.start()
-        process.join()
+    uvicorn.run(app, host="0.0.0.0", port=8000)
