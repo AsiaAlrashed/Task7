@@ -21,7 +21,15 @@ In short, Mage simplifies and speeds up the data pipeline development process, w
 
 
 dataset: Task7/my_project/data/
-Data extraction: Task7/my_project/data_loaders/
+
+Data extraction: Task7/my_project/data_loaders/data_load.py
+
 Data processing: Task7/my_project/transformers/transform.py
+
 Model training: Task7/my_project/transformers/lstm_model.py
+
 API development : Task7/my_project/custom/main.py
+
+MLFlow : Task7/my_project/ml_flow.py
+
+track the training process and record models : Task7/mlruns
