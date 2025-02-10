@@ -9,16 +9,16 @@ if "test" not in globals():
 @data_loader
 def extract_data(*args, **kwargs):
     """
-    تحميل بيانات التدريب والاختبار باستخدام Pandas.
+    Load training and test data using Pandas.
     """
     train_path = "E:\\Task7\\my_project\\data\\Sentimentdataset_train.csv"
     test_path = "E:\\Task7\\my_project\\data\\Sentimentdataset_test.csv"
 
-    # التأكد من وجود الملفات
+    # Make sure the files are there
     if not os.path.exists(train_path) or not os.path.exists(test_path):
         raise FileNotFoundError("ملف التدريب أو الاختبار غير موجود")
 
-    # تحميل البيانات
+    # Load data
     df_train = pd.read_csv(train_path)[['tweet_id', 'new_tweet_content', 'Label']]
     df_test = pd.read_csv(test_path)[['tweet_id', 'new_tweet_content', 'Label']]
 
@@ -27,7 +27,7 @@ def extract_data(*args, **kwargs):
 @test
 def test_output(output, *args) -> None:
     """
-    التحقق من صحة البيانات بعد التحميل.
+    Verify data after uploading.
     """
     assert isinstance(output, tuple), "Output should be a tuple (train_df, test_df)"
     train_df, test_df = output
