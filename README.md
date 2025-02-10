@@ -18,3 +18,10 @@ Using Mage, I was able to design an integrated data pipeline that includes data 
 Additionally, I created a custom class for MLflow to track the training process and record models, parameters, and metrics. This integration with MLflow allowed me to monitor and record the model performance in a structured manner, facilitating future analysis and improvement.
 
 In short, Mage simplifies and speeds up the data pipeline development process, while providing advanced tools for tracking and improving machine learning models.
+
+
+dataset: Task7/my_project/data/
+Data extraction: Task7/my_project/data_loaders/
+Data processing: Task7/my_project/transformers/transform.py
+Model training: Task7/my_project/transformers/lstm_model.py
+API development : Task7/my_project/custom/main.py
