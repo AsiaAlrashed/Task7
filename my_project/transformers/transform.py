@@ -24,37 +24,43 @@ class TextProcessor:
         self.label_encoder = LabelEncoder()
 
     def fit_tokenizer(self, texts):
-        """تدريب الـ Tokenizer على نصوص التدريب فقط"""
+        """
+        Tokenizer training on training scripts only
+        """
         self.tokenizer.fit_on_texts(texts)
 
     def transform_texts(self, texts):
-        """تحويل النصوص إلى تسلسل أرقام مع التعبئة"""
+        """
+        Convert text to number sequence with fill
+        """
         sequences = self.tokenizer.texts_to_sequences(texts)
         padded_sequences = pad_sequences(sequences, maxlen=self.max_length, padding="post")
-        return [list(seq) for seq in padded_sequences]  # تحويل ndarray إلى list لتجنب الخطأ
-
+        return [list(seq) for seq in padded_sequences]  # Convert ndarray to list
+        
     def encode_labels(self, labels):
-        """ترميز التسميات إلى أرقام كـ int بدلاً من numpy.integer"""
+        """
+        Encode labels to numbers as int instead of numpy.integer
+        """
         return [int(label) for label in self.label_encoder.fit_transform(labels)]
 
 
 @transformer
 def execute_transformer_action(data: tuple, *args, **kwargs) -> tuple:
     """
-    تنفيذ تحويل البيانات النصية لكلا مجموعتي التدريب والاختبار باستخدام `TextProcessor`
+    Perform text data transformation for both training and test sets using `TextProcessor`
     """
-    df_train, df_test = data  # استلام بيانات التدريب والاختبار من Data Loader
+    df_train, df_test = data  # Receive training and test data from Data Loader
 
     processor = TextProcessor()
 
-    # تدريب المحول على نصوص التدريب فقط
+    # Train the converter on training texts only.
     processor.fit_tokenizer(df_train["new_tweet_content"])
 
-    # تحويل النصوص إلى تسلسل أرقام
+    # Convert text to number sequence
     df_train["processed_text"] = processor.transform_texts(df_train["new_tweet_content"])
     df_test["processed_text"] = processor.transform_texts(df_test["new_tweet_content"])
 
-    # تحويل التسميات إلى أرقام
+    # Convert labels to numbers
     df_train["encoded_label"] = processor.encode_labels(df_train["Label"])
     df_test["encoded_label"] = processor.encode_labels(df_test["Label"])
 
@@ -64,26 +70,26 @@ def execute_transformer_action(data: tuple, *args, **kwargs) -> tuple:
 @test
 def test_output(output, *args) -> None:
     """
-    اختبار صحة البيانات بعد التحويل:
-    1. التحقق من أن الإخراج ليس فارغًا
-    2. التحقق من صحة الأشكال
-    3. التأكد من أن البيانات عددية ولا تحتوي على قيم مفقودة
+    Data validity testing after transformation:
+    1. Verify that the output is not empty
+    2. Verify that the figures are correct
+    3. Verify that the data is numerical and does not contain missing values
     """
-    assert output is not None, "❌ خطأ: الإخراج غير موجود (None)"
-    assert isinstance(output, tuple), "❌ خطأ: يجب أن يكون الإخراج Tuple (df_train, df_test)"
-    assert len(output) == 2, "❌ خطأ: الإخراج يجب أن يحتوي على df_train و df_test"
+    assert output is not None, "Error: Output not found (None)"
+    assert isinstance(output, tuple), "Error: Output must be tuple (df_train, df_test)"
+    assert len(output) == 2, "Error: Output must contain df_train and df_test"
 
     df_train, df_test = output
 
     for df, name in zip([df_train, df_test], ["df_train", "df_test"]):
-        assert isinstance(df, DataFrame), f"❌ خطأ: {name} يجب أن يكون DataFrame"
-        assert "processed_text" in df.columns, f"❌ خطأ: العمود 'processed_text' مفقود في {name}!"
-        assert "encoded_label" in df.columns, f"❌ خطأ: العمود 'encoded_label' مفقود في {name}!"
+        assert isinstance(df, DataFrame), f"Error: {name} must be a DataFrame"
+        assert "processed_text" in df.columns, f"Error: Column 'processed_text' is missing in {name}!"
+        assert "encoded_label" in df.columns, f"Error: Column 'encoded_label' is missing in {name}!"
 
         # التأكد من أن 'processed_text' عبارة عن قائمة من القوائم
-        assert df["processed_text"].apply(lambda x: isinstance(x, list)).all(), f"❌ خطأ: 'processed_text' يجب أن يكون قائمة من القوائم في {name}!"
+        assert df["processed_text"].apply(lambda x: isinstance(x, list)).all(), f"Error: 'processed_text' must be a list of lists in {name}!"
         
         # التأكد من أن 'encoded_label' يحتوي على أعداد صحيحة
-        assert df["encoded_label"].apply(lambda x: isinstance(x, int)).all(), f"❌ خطأ: 'encoded_label' يجب أن يحتوي على أعداد صحيحة في {name}!"
+        assert df["encoded_label"].apply(lambda x: isinstance(x, int)).all(), f"Error: 'encoded_label' must contain integers in {name}!"
 
-    print("✅ جميع الاختبارات نجحت! البيانات نظيفة وجاهزة للنموذج 🚀")
+    print("All tests passed! Data is clean and ready for modeling")
