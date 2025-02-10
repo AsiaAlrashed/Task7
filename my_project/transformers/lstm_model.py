@@ -15,37 +15,37 @@ if "test" not in globals():
 @transformer
 def train_lstm_model(data: tuple, *args, **kwargs) -> str:
     """
-    تدريب نموذج LSTM على البيانات النصية.
-
+    Training an LSTM model on text data.
+    
     Args:
-    - data (tuple): يتكون من `df_train` و `df_test`، يحتوي كل منهما على:
-        * `processed_text`: قائمة من القوائم تحتوي على النصوص المرمّزة.
-        * `encoded_label`: التصنيفات المحولة إلى أرقام.
-
+    - data (tuple): Consists of `df_train` and `df_test`, each containing:
+    * `processed_text`: A list of lists containing the encoded texts.
+    * `encoded_label`: The labels converted to numbers.
+    
     Returns:
-    - str: مسار حفظ النموذج المدرب.
+    - str: Path to save the trained model.
     """
 
-    df_train, df_test = data  # تفريغ البيانات المحولة
+    df_train, df_test = data  
 
-    # تحويل البيانات إلى NumPy arrays
+    # Convert data to NumPy arrays
     X_train = np.array(df_train["processed_text"].tolist())
     y_train = np.array(df_train["encoded_label"].tolist())
 
     X_test = np.array(df_test["processed_text"].tolist())
     y_test = np.array(df_test["encoded_label"].tolist())
 
-    # تقسيم بيانات التدريب إلى تدريب وتحقق
+    
     X_train, X_val, y_train, y_val = train_test_split(
         X_train, y_train, test_size=0.2, random_state=42
     )
 
-    # إعداد متغيرات النموذج
-    vocab_size = 5000  # نفس الحجم المستخدم في `TextProcessor`
+    # Setting up model variables
+    vocab_size = 5000  # Same size as used in `TextProcessor`
     embedding_dim = 64
     max_length = X_train.shape[1]
 
-    # إنشاء نموذج LSTM
+    # Create an LSTM model
     model = Sequential(
         [
             Embedding(vocab_size, embedding_dim, input_length=max_length),
@@ -54,41 +54,41 @@ def train_lstm_model(data: tuple, *args, **kwargs) -> str:
             LSTM(32),
             Dropout(0.5),
             Dense(16, activation="relu"),
-            Dense(1, activation="sigmoid"),  # للخروج ثنائي
+            Dense(1, activation="sigmoid"),  
         ]
     )
 
-    # تجميع النموذج
+    # Assemble the model
     model.compile(
         loss="binary_crossentropy",
         optimizer=Adam(learning_rate=0.001),
         metrics=["accuracy"],
     )
 
-    # إعداد MLflow
+    #MLflow setup
     mlflow_tracker = MLFlow(experiment_name="LSTM_Text_Classification")
     mlflow_callback = MLflowCallback(mlflow_tracker)
 
-    # تدريب النموذج
+    # Model training
     model.fit(
         X_train,
         y_train,
         epochs=10,
         batch_size=32,
         validation_data=(X_val, y_val),
-        callbacks=[mlflow_callback],  # إضافة MLflow كـ Callback
+        callbacks=[mlflow_callback],  # Add MLflow as Callback
     )
 
-    # تقييم النموذج على بيانات الاختبار
+    # Evaluate the model on test data
     loss, accuracy = model.evaluate(X_test, y_test)
-    print(f"✅ دقة النموذج على بيانات الاختبار: {accuracy:.4f}")
+    print(f"Model accuracy on test data: {accuracy:.4f}")
 
-    # حفظ النموذج
+    # save model
     model_path = "E:\\Task7\\lstm_text_classifier.h5"
     model.save(model_path)
-    print(f"✅ تم حفظ النموذج في: {model_path}")
+    print(f"The form has been saved in: {model_path}")
 
-    # تسجيل النموذج في MLflow
+    # Register the form in MLflow
     mlflow_tracker.log_model(model, "lstm_text_classifier")
     mlflow_tracker.end_run()
 
@@ -98,11 +98,11 @@ def train_lstm_model(data: tuple, *args, **kwargs) -> str:
 @test
 def test_output(output, *args) -> None:
     """
-    اختبار صحة المخرجات.
-    - التأكد من أن مسار النموذج الناتج صحيح.
+    Verify the output validity.
+    - Ensure that the path of the resulting model is correct.
     """
     assert isinstance(
         output, str
-    ), "❌ خطأ: الإخراج يجب أن يكون نصًا يحتوي على مسار النموذج"
-    assert output.endswith(".h5"), "❌ خطأ: يجب أن يكون الإخراج ملف H5"
-    print("✅ الاختبار ناجح! تم حفظ النموذج بنجاح.")
+    ), "Error: Output must be text containing the form path"
+    assert output.endswith(".h5"), "Error: Output must be H5 file"
+    print("Test successful! Form saved successfully.")
